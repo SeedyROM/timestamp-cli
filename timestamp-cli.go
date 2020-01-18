@@ -11,7 +11,7 @@ import (
 // Error constants
 const (
 	Success        = 0
-	InvalidCommand = iota
+	InvalidCommand = 1 - iota
 	ParseError
 	Exited
 )
