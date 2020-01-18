@@ -10,8 +10,10 @@ import (
 
 // Error constants
 const (
+	Success        = 0
 	InvalidCommand = iota
-	Invalid
+	ParseError
+	Exited
 )
 
 // Time constants
@@ -85,7 +87,7 @@ func GetTimeStamp(total string, amount string) int64 {
 
 	if err != nil {
 		fmt.Printf("Invalid amount: %v\n", amount)
-		os.Exit(-1)
+		os.Exit(ParseError)
 	}
 
 	return int64(totalInt) * amountInMillis
@@ -98,7 +100,7 @@ func HandleCommand(expression string, when string) int64 {
 	// Handle invalid expressions
 	if err != nil {
 		fmt.Printf("Invalid expression: %v\n", expression)
-		os.Exit(-1)
+		os.Exit(ParseError)
 	}
 
 	// Get the amount of time in milliseconds from the command
@@ -123,7 +125,7 @@ func EvaluateCommand(rawCommand []string) (int64, error) {
 
 		if part == "-h" || part == "--help" {
 			usage()
-			os.Exit(0)
+			os.Exit(Success)
 		}
 
 		if SliceContains(part, []string{Ago, From}) != -1 {
@@ -180,7 +182,7 @@ func main() {
 		result, err := EvaluateCommand(rawCommand)
 		if err != nil {
 			fmt.Printf("Invalid command: %v", rawCommand)
-			os.Exit(-2)
+			os.Exit(InvalidCommand)
 		}
 
 		fmt.Println(result)
