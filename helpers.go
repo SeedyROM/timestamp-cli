@@ -13,7 +13,7 @@ func SliceContains(value string, slice []string) int {
 	return -1
 }
 
-// Now gets the time right now in milliseconds
+// GetNow gets the time right now in milliseconds
 func GetNow() int64 {
 	return time.Now().Round(time.Millisecond).UnixNano() / 1e6
 }

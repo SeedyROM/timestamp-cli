@@ -5,5 +5,5 @@ all:
 	mv build/timestamp-cli build/timestamp
 
 install:
-	sudo cp build/timestamp /usr/bin
-	echo "Successfully installed to /usr/bin!"
+	sudo cp build/timestamp /usr/local/bin
+	echo "Successfully installed to /usr/local/bin!"

@@ -85,7 +85,7 @@ func GetTimeStamp(total string, amount string) int64 {
 }
 
 // HandleCommand parses a time expression
-func HandleCommand(expression string, when string) {
+func HandleCommand(expression string, when string) int64 {
 	total, amount, err := ParseExpression(expression)
 
 	// Handle invalid expressions
@@ -97,16 +97,16 @@ func HandleCommand(expression string, when string) {
 	// Get the amount of time in milliseconds from the command
 	result := GetTimeStamp(total, amount)
 
-	// If it's in the past subtract, in the future add
+	// If it's in the past subtract
 	if when == Ago {
-		fmt.Println(GetNow() - result)
-	} else {
-		fmt.Println(GetNow() + result)
+		return GetNow() - result
 	}
+	// If it's in the future add
+	return GetNow() + result
 }
 
 // ParseCommand parses the raw command given to the CLI
-func ParseCommand(rawCommand []string) {
+func ParseCommand(rawCommand []string) int64 {
 	length := len(rawCommand)
 
 	var expression []string
@@ -120,12 +120,13 @@ func ParseCommand(rawCommand []string) {
 		}
 
 		if SliceContains(part, []string{Ago, From}) != -1 {
-			HandleCommand(strings.Join(expression, " "), part)
-			break
-		} else {
-			expression = append(expression, part)
+			return HandleCommand(strings.Join(expression, " "), part)
 		}
+
+		expression = append(expression, part)
 	}
+
+	return -1
 }
 
 func usage() {
@@ -142,6 +143,7 @@ func main() {
 	if len(rawCommand) == 0 || rawCommand[0] == Now {
 		fmt.Println(GetNow())
 	} else {
-		ParseCommand(rawCommand)
+		result := ParseCommand(rawCommand)
+		fmt.Println(result)
 	}
 }
