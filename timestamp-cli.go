@@ -27,6 +27,14 @@ const (
 	Days = "days"
 	// DayAmount is the amount of milliseconds in an day
 	DayAmount = HourAmount * 24
+	// Months are months
+	Months = "months"
+	// MonthAmount is the amount of milliseconds in a month
+	MonthAmount = DayAmount * 30
+	// Years are years
+	Years = "years"
+	// YearAmount is the amount of milliseconds in a year
+	YearAmount = MonthAmount * 12
 )
 
 // ParseExpression gets the amount or calculation from the expression
@@ -38,7 +46,7 @@ func ParseExpression(expression string) (string, string, error) {
 	for i := 0; i < length; i++ {
 		part := parts[i]
 
-		if SliceContains(part, []string{Days, Hours, Minutes}) == -1 {
+		if SliceContains(part, []string{Years, Months, Days, Hours, Minutes}) == -1 {
 			amount = append(amount, parts[i])
 		} else {
 			return strings.Join(amount, " "), parts[i], nil
@@ -60,6 +68,10 @@ func GetTimeStamp(total string, amount string) int64 {
 	case Days:
 		amountInMillis = DayAmount
 		break
+	case Months:
+		amountInMillis = MonthAmount
+	case Years:
+		amountInMillis = YearAmount
 	}
 
 	totalInt, err := strconv.Atoi(total)
