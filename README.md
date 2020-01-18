@@ -27,4 +27,4 @@ $ ./build/timestamp
 ## Install
 
 * `$ make install`
-* And you're good to go, this script install timestamp in /usr/bin
+* And you're good to go, this script install timestamp in /usr/local/bin
