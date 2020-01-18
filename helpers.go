@@ -14,6 +14,6 @@ func SliceContains(value string, slice []string) int {
 }
 
 // Now gets the time right now in milliseconds
-func Now() int64 {
+func GetNow() int64 {
 	return time.Now().Round(time.Millisecond).UnixNano() / 1e6
 }
