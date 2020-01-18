@@ -144,7 +144,7 @@ func printVersion() {
 func help() {
 	fmt.Println("Usage:")
 	fmt.Println("\ttimestamp 5 minutes from now")
-	fmt.Printf("\ttimestamp 10 hours ago\n")
+	fmt.Println("\ttimestamp 10 hours ago")
 }
 
 // Pretty print the usage for the command
@@ -164,12 +164,8 @@ func usage() {
 	// Print the help screen
 	help()
 
-	// TODO: WTF?
-	(&HeaderOptions{
-		Text:    "",
-		Pattern: "-",
-		Padding: 1,
-	}).PrintHeader()
+	// End the pretty output
+	HorizontalRule(description, "-")
 }
 
 // Where the magic happens
