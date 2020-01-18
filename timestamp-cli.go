@@ -8,6 +8,13 @@ import (
 	"strings"
 )
 
+// Error constants
+const (
+	InvalidCommand = iota
+	Invalid
+)
+
+// Time constants
 const (
 	// Now is now
 	Now = "now"
@@ -105,8 +112,8 @@ func HandleCommand(expression string, when string) int64 {
 	return GetNow() + result
 }
 
-// ParseCommand parses the raw command given to the CLI
-func ParseCommand(rawCommand []string) int64 {
+// EvaluateCommand parses the raw command given to the CLI
+func EvaluateCommand(rawCommand []string) (int64, error) {
 	length := len(rawCommand)
 
 	var expression []string
@@ -120,22 +127,41 @@ func ParseCommand(rawCommand []string) int64 {
 		}
 
 		if SliceContains(part, []string{Ago, From}) != -1 {
-			return HandleCommand(strings.Join(expression, " "), part)
+			return HandleCommand(strings.Join(expression, " "), part), nil
 		}
 
 		expression = append(expression, part)
 	}
 
-	return -1
+	return -1, fmt.Errorf("Invalid command: %v", strings.Join(rawCommand, " "))
 }
 
-func usage() {
+// Display the program's version and source package information
+func printVersion() {
 	fmt.Println("github.com/SeedyROM/timestamp v1.0.0")
+}
+
+// Pretty print the usage for the command
+func usage() {
+	description := "A command to generate timestamps (in milliseconds or seconds)\nwith a human readable interface."
+
+	printVersion()
+	PrintHeader(&HeaderOptions{
+		Text:    description,
+		Pattern: "-",
+		Padding: 1,
+	})
 	fmt.Println("Usage:")
 	fmt.Println("\ttimestamp 5 minutes from now")
-	fmt.Println("\ttimestamp 10 hours ago")
+	fmt.Printf("\ttimestamp 10 hours ago\n")
+	PrintHeader(&HeaderOptions{
+		Text:    "",
+		Pattern: "-",
+		Padding: 1,
+	})
 }
 
+// Where the magic happens
 func main() {
 	rawCommand := os.Args[1:]
 
@@ -143,7 +169,13 @@ func main() {
 	if len(rawCommand) == 0 || rawCommand[0] == Now {
 		fmt.Println(GetNow())
 	} else {
-		result := ParseCommand(rawCommand)
+		// Evaluate a command given to the program
+		result, err := EvaluateCommand(rawCommand)
+		if err != nil {
+			fmt.Printf("Invalid command: %v", rawCommand)
+			os.Exit(-2)
+		}
+
 		fmt.Println(result)
 	}
 }
