@@ -17,7 +17,7 @@ $ timestamp 5 hours from now
 
 ```
 $ make
->...
+> ...
 $ ./build/timestamp
 > 1579338789212
 ```
