@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 )
 
 const (
@@ -22,17 +21,37 @@ const (
 	MINUTES = "minutes"
 )
 
-func now() int64 {
-	return time.Now().Round(time.Millisecond).UnixNano() / 1e6
+// ParseExpression parses a time expression
+func ParseExpression(expression string) {
+	fmt.Println(expression)
+}
+
+// ParseCommand parses the raw command given to the CLI
+func ParseCommand(rawCommand []string) {
+	length := len(rawCommand)
+
+	var expression []string
+
+	for i := 0; i < length; i++ {
+		part := rawCommand[i]
+		if SliceContains(part, []string{AGO, FROM}) != -1 {
+			ParseExpression(strings.Join(expression, " "))
+			break
+		} else {
+			expression = append(expression, part)
+		}
+	}
 }
 
 func main() {
 	rawCommand := os.Args[1:]
 
+	// Default to now or expect now
 	if len(rawCommand) == 0 || rawCommand[0] == NOW {
-		fmt.Println(now())
+		fmt.Println(Now())
 	} else {
-		fmt.Printf("Unsupported command: %v", strings.Join(os.Args[1:], " "))
-		os.Exit(-1)
+		ParseCommand(rawCommand)
+		// fmt.Printf("Unsupported command: %v\n", strings.Join(os.Args[1:], " "))
+		// os.Exit(-1)
 	}
 }
