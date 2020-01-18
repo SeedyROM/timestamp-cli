@@ -56,7 +56,7 @@ func ParseExpression(expression string) (string, string, error) {
 	return "", "", errors.New("Invalid expression")
 }
 
-// GetTimeStamp gets a timestamp from an total and an amount
+// GetTimeStamp gets a timestamp from a total value and an amount
 func GetTimeStamp(total string, amount string) int64 {
 	var amountInMillis int64
 
