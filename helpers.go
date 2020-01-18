@@ -45,7 +45,12 @@ func HorizontalRule(text string, pattern string) {
 }
 
 // PrintHeader prints a pretty printed header
-func PrintHeader(opts *HeaderOptions) {
+func (opts *HeaderOptions) PrintHeader() {
+	if opts.Text == "" {
+		HorizontalRule(opts.Text, opts.Pattern)
+
+		return
+	}
 	HorizontalRule(opts.Text, opts.Pattern)
 	fmt.Println(opts.Text)
 	HorizontalRule(opts.Text, opts.Pattern)

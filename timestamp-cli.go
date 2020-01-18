@@ -141,24 +141,35 @@ func printVersion() {
 	fmt.Println("github.com/SeedyROM/timestamp v1.0.0")
 }
 
+func help() {
+	fmt.Println("Usage:")
+	fmt.Println("\ttimestamp 5 minutes from now")
+	fmt.Printf("\ttimestamp 10 hours ago\n")
+}
+
 // Pretty print the usage for the command
 func usage() {
 	description := "A command to generate timestamps (in milliseconds or seconds)\nwith a human readable interface."
 
+	// Print information about the command
 	printVersion()
-	PrintHeader(&HeaderOptions{
+
+	// TODO: Woah can you actually push a struct on the stack?
+	(&HeaderOptions{
 		Text:    description,
 		Pattern: "-",
 		Padding: 1,
-	})
-	fmt.Println("Usage:")
-	fmt.Println("\ttimestamp 5 minutes from now")
-	fmt.Printf("\ttimestamp 10 hours ago\n")
-	PrintHeader(&HeaderOptions{
+	}).PrintHeader()
+
+	// Print the help screen
+	help()
+
+	// TODO: WTF?
+	(&HeaderOptions{
 		Text:    "",
 		Pattern: "-",
 		Padding: 1,
-	})
+	}).PrintHeader()
 }
 
 // Where the magic happens
