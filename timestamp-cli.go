@@ -3,10 +3,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/nleeper/goment"
 	"os"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/nleeper/goment"
 )
 
 // Error constants
@@ -37,14 +39,14 @@ const (
 	Days = "days"
 	// DayAmount is the amount of milliseconds in an day
 	DayAmount = HourAmount * 24
+
+	// These constants don't have values because of inconsistencies
 	// Months are months
 	Months = "months"
-	// MonthAmount is the amount of milliseconds in a month
-	MonthAmount = DayAmount * 30
 	// Years are years
 	Years = "years"
-	// YearAmount is the amount of milliseconds in a year
-	YearAmount = MonthAmount * 12
+	// InconsistentAmount is a constant that describes just that
+	InconsistentAmount = int64(-1)
 )
 
 // ParseExpression gets the amount or calculation from the expression
@@ -79,9 +81,9 @@ func GetTimeStamp(total string, amount string) int64 {
 		amountInMillis = DayAmount
 		break
 	case Months:
-		amountInMillis = MonthAmount
+		fallthrough
 	case Years:
-		amountInMillis = YearAmount
+		return InconsistentAmount
 	}
 
 	totalInt, err := strconv.Atoi(total)
@@ -107,14 +109,22 @@ func HandleCommand(expression string, when string) int64 {
 	// Get the amount of time in milliseconds from the command
 	result := GetTimeStamp(total, amount)
 
-	result := goment.New(GetNow())
+	if result == -1 {
+		timestamp, _ := goment.New(time.Now().UnixNano())
+		// If it's in the past subtract
+		if when == Ago {
+			return timestamp.Subtract(total, amount).ToUnix() * 1000
+		}
+		// If it's in the future add
+		return timestamp.Add(total, amount).ToUnix() * 1000
+	}
 
 	// If it's in the past subtract
 	if when == Ago {
-		return GetNow() - result
+		return (GetNow() - result)
 	}
 	// If it's in the future add
-	return GetNow() + result
+	return (GetNow() + result)
 }
 
 // EvaluateCommand parses the raw command given to the CLI
@@ -132,13 +142,15 @@ func EvaluateCommand(rawCommand []string) (int64, error) {
 		}
 
 		if SliceContains(part, []string{Ago, From}) != -1 {
-			return HandleCommand(strings.Join(expression, " "), part), nil
+			timestamp := HandleCommand(strings.Join(expression, " "), part)
+
+			return timestamp, nil
 		}
 
 		expression = append(expression, part)
 	}
 
-	return -1, fmt.Errorf("Invalid command: %v", strings.Join(rawCommand, " "))
+	return 0, fmt.Errorf("Invalid command: %v", strings.Join(rawCommand, " "))
 }
 
 // Display the program's version and source package information
@@ -159,7 +171,7 @@ func usage() {
 	// Print information about the command
 	printVersion()
 
-	// TODO: Woah can you actually push a struct on the stack?
+	// Woah can you actually push a struct on the stack?
 	(&HeaderOptions{
 		Text:    description,
 		Pattern: "-",
