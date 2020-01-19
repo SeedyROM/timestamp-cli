@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/nleeper/goment"
 	"os"
 	"strconv"
 	"strings"
@@ -105,6 +106,8 @@ func HandleCommand(expression string, when string) int64 {
 
 	// Get the amount of time in milliseconds from the command
 	result := GetTimeStamp(total, amount)
+
+	result := goment.New(GetNow())
 
 	// If it's in the past subtract
 	if when == Ago {
