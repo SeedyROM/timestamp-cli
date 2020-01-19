@@ -5,7 +5,7 @@ EXECUTABLE_NAME=timestamp
 INSTALL_PATH=/usr/local/bin
 
 build: $(SRC_FILES)
-	go build
+	go build .
 	mkdir -p $(BUILD_DIR)
 	mv $(DEFAULT_MODULE_NAME) $(BUILD_DIR)
 	mv $(BUILD_DIR)/$(DEFAULT_MODULE_NAME) $(BUILD_DIR)/$(EXECUTABLE_NAME)
