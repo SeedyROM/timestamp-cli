@@ -2,7 +2,12 @@
 
 `timestamp` is a command to generate timestamps (in milliseconds or seconds) with a human readable interface.
 
-Supported periods: `minute` `hour` `day` `month` `year`
+Supported periods: 
+  * `minutes` 
+  * `hours` 
+  * `days` 
+  * `months` 
+  * `years`
 
 ### Examples:
 ```
